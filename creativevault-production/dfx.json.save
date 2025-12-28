@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "canisters": {
+    "idea_vault": {
+      "type": "motoko",
+      "main": "src/idea_vault/main.mo"
+    },
+    "creative_vault_frontend": {
+      "dependencies": [
+        "idea_vault"
+      ],
+      "frontend": {
+        "entrypoint": "src/creative_vault_frontend/index.html"
+      },
+      "source": [
+        "dist/creative_vault_frontend/"
+      ],
+      "type": "assets"
+    }
+  },
+  "networks": {
+   
+    "testnet": {
+  	"providers": ["https://ic0.app"],
+  	"type": "persistent"
+	}
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env"
+}

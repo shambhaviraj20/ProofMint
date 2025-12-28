@@ -1,0 +1,9 @@
+dfx identity use local-test
+
+dfx start --clean --background
+
+dfx deploy
+shardul0x
+
+cd creativevault-production
+npm start

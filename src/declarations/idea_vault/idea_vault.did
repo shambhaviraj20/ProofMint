@@ -1,0 +1,55 @@
+type SemanticReport = 
+ record {
+   risk: text;
+   score: nat;
+ };
+type Result = 
+ variant {
+   err: text;
+   ok: text;
+ };
+type IdeaStatus = 
+ variant {
+   Private;
+   Public;
+   RevealLater;
+ };
+type IdeaInput = 
+ record {
+   category: text;
+   description: text;
+   ipfsHash: opt text;
+   semantic: opt SemanticReport;
+   status: IdeaStatus;
+   tags: vec text;
+   title: text;
+ };
+type Idea = 
+ record {
+   category: text;
+   creator: principal;
+   description: text;
+   id: text;
+   ipfsHash: opt text;
+   isRevealed: bool;
+   proofHash: text;
+   revealTimestamp: opt int;
+   semantic: opt SemanticReport;
+   status: IdeaStatus;
+   tags: vec text;
+   timestamp: int;
+   title: text;
+   version: nat;
+ };
+service : {
+  getPublicFeed: (limit: opt nat, offset: opt nat, category: opt text) ->
+   (vec Idea) query;
+  getStats: () ->
+   (record {
+      publicIdeas: nat;
+      totalIdeas: nat;
+      totalUsers: nat;
+    }) query;
+  getUserIdeas: () -> (vec Idea);
+  submitIdea: (input: IdeaInput) -> (Result);
+}

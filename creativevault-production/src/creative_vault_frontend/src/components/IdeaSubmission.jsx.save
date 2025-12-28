@@ -1,0 +1,218 @@
+import React, { useState } from 'react';
+import { useAuthStore } from '../store/authStore';
+import { useIdeaStore } from '../store/ideaStore';
+import { FileText, Upload, Lock, Globe, Clock, Zap, Shield, CheckCircle, Info, Loader2 } from 'lucide-react';
+
+const IdeaSubmission = () => {
+  const { actor } = useAuthStore();
+  const { submitIdea, loading: submitting } = useIdeaStore();
+  
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    status: 'Public',
+    ipfsHash: '',
+    tags: '',
+    category: 'General'
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.title || !formData.description) {
+      return;
+    }
+
+    if (!actor) {
+      console.error('Actor not available');
+      return;
+    }
+
+    try {
+      const tagsArray = formData.tags
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+
+      const ideaInput = {
+        title: formData.title,
+        description: formData.description,
+        status: { [formData.status]: null },
+        ipfsHash: formData.ipfsHash ? [formData.ipfsHash] : [],
+        tags: tagsArray,
+        category: formData.category
+      };
+
+      const ideaId = await submitIdea(actor, ideaInput);
+
+      if (ideaId) {
+        setFormData({
+          title: '',
+          description: '',
+          status: 'Public',
+          ipfsHash: '',
+          tags: '',
+          category: 'General'
+        });
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+    }
+  };
+
+  const statusOptions = [
+    {
+      value: 'Public',
+      icon: Globe,
+      label: 'Public',
+      desc: 'Visible to everyone immediately',
+      badge: 'Open Source'
+    },
+    {
+      value: 'Private',
+      icon: Lock,
+      label: 'Private',
+      desc: 'Only visible to you',
+      badge: 'Confidential'
+    },
+    {
+      value: 'RevealLater',
+      icon: Clock,
+      label: 'Reveal Later',
+      desc: 'Time-locked disclosure',
+      badge: 'Time-Lock'
+    }
+  ];
+
+  const categories = [
+    'General',
+    'Technology',
+    'Art',
+    'Music',
+    'Writing',
+    'Design',
+    'Science',
+    'Business',
+    'Other'
+  ];
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
+          <div className="flex items-center space-x-3">
+            <Shield className="w-8 h-8 text-white" />
+            <div>
+              <h2 className="text-2xl font-bold text-white">Submit Your Idea</h2>
+              <p className="text-yellow-100 text-sm">Protect your intellectual property on the blockchain</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Info Banner */}
+        <div className="bg-blue-500/10 border-b border-blue-500/30 px-8 py-4">
+          <div className="flex items-start space-x-3">
+            <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-blue-300">
+              <p className="font-medium">How it works:</p>
+              <p className="text-blue-400 mt-1">
+                Your idea will be timestamped and stored immutably on the Internet Computer blockchain.
+                This creates verifiable proof of creation that can be used for intellectual property protection.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          {/* Title */}
+          <div>
+            <label className="flex items-center text-sm font-semibold text-gray-200 mb-2">
+              <FileText className="w-4 h-4 mr-2 text-yellow-400" />
+              Idea Title
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="Enter a descriptive title for your idea"
+              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+              required
+              disabled={submitting}
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="flex items-center text-sm f              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Describe your idea in detail..."
+              rows="6"
+              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all resize-none"
+              required
+              disabled={submitting}
+            />
+          </div>
+
+          {/* Category */}
+          <div>
+            <label className="flex items-center text-sm font-semibold text-gray-200 mb-2">
+              <Zap className="w-4 h-4 mr-2 text-yellow-400" />
+              Category
+            </label>
+            <select
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+              disabled={submitting}
+            >
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Tags */}
+          <div>
+            <label className="flex items-center text-sm font-semibold text-gray-200 mb-2">
+              <Zap className="w-4 h-4 mr-2 text-yellow-400" />
+              Tags (comma-separated)
+            </label>
+            <input
+              type="text"
+              value={formData.tags}
+              onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+              placeholder="e.g., innovation, tech, patent"
+              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+              disabled={submitting}
+            />
+          </div>
+
+          {/* Privacy Status */}
+          <div>
+            <label className="text-sm font-semibold text-gray-200 mb-3 block">
+              Privacy Settings
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {statusOptions.map(({ value, icon: Icon, label, desc, badge }) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, status: value })}
+                  disabled={submitting}
+                  className={`relative p-4 rounded-xl border-2 transition-all text-left ${
+                    formData.status === value
+                      ? 'border-yellow-500 bg-yellow-500/10 shadow-lg'
+                      : 'border-slate-600 hover:border-yellow-400/50 bg-slate-700/30'
+                  }`}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <Icon className={`w-5 h-5 ${formData.status === value ? 'text-yellow-400' : 'text-gray-400'}`} />
+                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                      formData.status === value
+                        ? 'bg-yellow-500 text-black'
+                        : 'bg-slate-600 text-gr

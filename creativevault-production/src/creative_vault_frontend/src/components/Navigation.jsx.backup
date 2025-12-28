@@ -1,0 +1,50 @@
+import React from 'react';
+import { Plus, Lightbulb, Globe, Shield } from 'lucide-react';
+
+const Navigation = ({ activeTab, setActiveTab }) => {
+  const tabs = [
+    { id: 'submit', label: 'Submit Idea', icon: Plus },
+    { id: 'my-ideas', label: 'My Ideas', icon: Lightbulb },
+    { id: 'feed', label: 'Public Feed', icon: Globe },
+    { id: 'proof', label: 'Generate Proof', icon: Shield }
+  ];
+
+  return (
+    <nav className="bg-white border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between">
+          {/* Navigation Tabs */}
+          <div className="flex space-x-8">
+            {tabs.map(tab => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 px-4 py-4 text-sm font-medium transition-colors border-b-2 ${
+                    isActive
+                      ? 'text-indigo-600 border-indigo-600'
+                      : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Stats or Info (Optional) */}
+          <div className="flex items-center space-x-4">
+            <div className="text-sm text-gray-500">
+              <span className="font-medium text-gray-700">Anonymous Mode</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navigation;
