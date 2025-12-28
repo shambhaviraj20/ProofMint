@@ -1,47 +1,24 @@
-# Dependencies
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Node
 node_modules/
-*/node_modules/
-**/node_modules/
-.pnp
-.pnp.js
+npm-debug.log*
 package-lock.json
 
-# DFX
-.dfx/
-.ic-assets.json
-canister_ids.json
-
-# Build outputs
+# Build
 dist/
 build/
-*/dist/
-*/build/
-.vite/
-.cache/
 
-# Environment
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# DFINITY
+.dfx/
+.vessel/
+*.wasm
+.ic-assets.json
 
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# IDE
+# OS / Editor
+.DS_Store
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Testing
-coverage/
-.nyc_output/
