@@ -5,20 +5,14 @@ __pycache__/
 
 # Node
 node_modules/
-npm-debug.log*
-package-lock.json
-
-# Build
 dist/
-build/
 
-# DFINITY
+# ICP / DFX
 .dfx/
-.vessel/
-*.wasm
-.ic-assets.json
 
-# OS / Editor
+# Environment
+.env
+
+# OS
 .DS_Store
-.vscode/
-.idea/
+Thumbs.db
