@@ -101,7 +101,6 @@ creativevault-production/
 │   ├── idea_vault/
 │   │   └── main.mo  <-- Motoko Backend
 │   └── declarations/
-├── generated-image.jpg  <-- Place logo here
 ├── dfx.json
 ├── package.json
 └── README.md
